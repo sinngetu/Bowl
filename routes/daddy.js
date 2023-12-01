@@ -33,15 +33,15 @@ route.post('/', async (req, res) => {
         res.end()
         return
     }
-    
-    const { data = [], token } = req.body || {}
-    
+
+    const { data = [], token, type } = req.body || {}
+
     if (token === 'e92b585d0b9e640eb98af95e2f064c8e') {
         const info = await deduplicate(data.map((item) => ({
             ...item,
             hash: utils.md5(item.link),
             date: dayjs().format('YYYY-MM-DD HH:mm:00'),
-            state: 0
+            type
         })))
 
         const success = await model.daddy.saveInfo(info)

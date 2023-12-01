@@ -8,6 +8,7 @@ route.get('/', async (req, res) => {
     params.tags = (params.tags || []).map(tag => Number(tag))
     params.start = dayjs(Number(params.start)).format('YYYY-MM-DD HH:mm:00')
     params.end = dayjs(Number(params.end)).format('YYYY-MM-DD HH:mm:00')
+    params.status = Number(params.status) || 0
 
     const data = await model.news.getNews(params)
 
