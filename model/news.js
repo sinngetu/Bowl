@@ -5,6 +5,7 @@ const table = () => db('work_news')
 
 exports.saveNews = async (data) => data.length ? await table().insert(data) : []
 exports.updateNews = async (hash, info) => info ? await table().where({ hash }).update(info) : []
+exports.getByHash = async (hash) => hash.length ? await table().whereIn('hash', hash).select('*') : []
 exports.getNews = async (info) => {
     const current = dayjs().format('YYYY-MM-DD HH:mm:00')
     const { hash, link, medium, title = '', status, tags, start = current, end = current } = info
