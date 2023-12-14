@@ -157,24 +157,36 @@ async function TouTiao(url) {
     if (frags.pop() === '')
         frags.pop()
 
-    const isVideo = frags.pop() === 'video'
-
+    const type = frags.pop()
     const page = await browser.newPage()
     await page.goto(url, { timeout: 0, waitUntil: 'networkidle2' })
 
-    const info = isVideo ? await page.evaluate(() => {
-        const content = (document.querySelector('h1')?.lastChild).wholeText.replaceAll('\n', ' ')
-        const username = (document.querySelector('a.author-name'))?.innerHTML
-        const total = (document.querySelector('.actions-list li:nth-child(2) button span'))?.innerHTML
-
-        return ({ content, username, total: String(Number(total) || 0) })
-    }) : await page.evaluate(() => {
-        const content = document.querySelector('.weitoutiao-html')?.innerText.replaceAll('\n', ' ')
-        const username = document.querySelector('a.name')?.innerHTML
-        const total = document.querySelector('#comment-area .title span')?.innerHTML
-
-        return ({ content, username, total: String(Number(total) || 0) })
-    })
+    let info
+    if (type === 'video') {
+        info = await page.evaluate(() => {
+            const content = (document.querySelector('h1')?.lastChild).wholeText.replaceAll('\n', ' ')
+            const username = (document.querySelector('a.author-name'))?.innerHTML
+            const total = (document.querySelector('.actions-list li:nth-child(2) button span'))?.innerHTML
+    
+            return ({ content, username, total: String(Number(total) || 0) })
+        })
+    } else if (type === 'article') {
+        info = await page.evaluate(() => {
+            const content = document.getElementsByTagName('h1')[0]?.innerHTML
+            const username = document.querySelector('span.name a')?.innerHTML
+            const total = document.querySelector('#comment-area .title span')?.innerHTML
+    
+            return ({ content, username, total: String(Number(total) || 0) })
+        })
+    } else {
+        info = await page.evaluate(() => {
+            const content = document.querySelector('.weitoutiao-html')?.innerText.replaceAll('\n', ' ')
+            const username = document.querySelector('a.name')?.innerHTML
+            const total = document.querySelector('#comment-area .title span')?.innerHTML
+    
+            return ({ content, username, total: String(Number(total) || 0) })
+        })
+    }
 
     return { ...info, url: url.href, prefix: getPrefix(info.content), platform: '今日头条' }
 }
