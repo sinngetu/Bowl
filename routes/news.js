@@ -65,4 +65,28 @@ route.post('/keyword/del', async (req, res) => {
     res.end()
 })
 
+route.post('/search/add', async (req, res) => {
+    const { word, url } = req.body
+    const data = await model.keyword.addKeyword(word, 3, url)
+
+    res.send({ id: data[0] })
+    res.end()
+})
+
+route.post('/search/edit', async (req, res) => {
+    const { id, word, url } = req.body
+    const data = await model.keyword.editKeyword(id, word, url)
+
+    res.send({ success: Boolean(data) })
+    res.end()
+})
+
+route.post('/search/del', async (req, res) => {
+    const { id } = req.body
+    const data = await model.keyword.delKeyword(id)
+
+    res.send({ success: Boolean(data) })
+    res.end()
+})
+
 module.exports = route
