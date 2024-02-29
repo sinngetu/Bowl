@@ -22,6 +22,7 @@ async function distribute(link) {
         case 'www.xiaohongshu.com': return await XiaoHongShu(url)
         case 'weibo.com': return WeiBo(url)
         case 'www.toutiao.com': return TouTiao(url)
+        case 'www.douyin.com': return DouYin(url)
         default: return { url: link, prefix: '. 【】' }
     }
 }
@@ -193,4 +194,55 @@ async function TouTiao(url) {
 
         return { ...info, url: url.href, prefix: getPrefix(info.content), platform: '今日头条' }
     } catch (e) { return { url, prefix: '. 【】' } }
+}
+
+const douyinQueue = []
+const douyinResolve = {}
+async function DouYin(url) {
+    douyinQueue.push(url)
+    const P = new Promise(r => douyinResolve[url] = r)
+
+    DouYinHandle()
+    return P
+}
+
+let idle = true
+async function DouYinHandle(selfRun = false) {
+    if (!idle && !selfRun) return
+    if (!douyinQueue.length) return idle = true
+
+    idle = false
+    const url = douyinQueue.shift()
+    let result
+
+    try {
+        const page = await browser.newPage()
+        await page.goto(url, { timeout: 0, waitUntil: 'networkidle2' })
+
+        let info = await page.evaluate(() => {
+            const type = location.pathname.split('/')[1]
+            let content, username, total, like, fans
+
+            if (type === 'note') {
+                content = (document.querySelector('h1.gfFMmdEm .j5WZzJdp'))?.innerText
+                username = (document.querySelector('.UbblxGZr.wfPNSS3V a.hY8lWHgA .j5WZzJdp'))?.innerText
+                total = (document.querySelectorAll('.PSi6D1jN .v3nZSid1 .G0CbEcWs')[1])?.innerHTML
+                like = (document.querySelectorAll('.PSi6D1jN .v3nZSid1 .G0CbEcWs')[0])?.innerHTML
+                fans = (document.querySelector('.KtZzcbT8 .JWilT3lH'))?.innerHTML
+            } else {
+                content = (document.querySelector('h1.hE8dATZQ'))?.innerText
+                username = (document.querySelector('a.hY8lWHgA .teGknu7j'))?.innerText
+                total = (document.querySelectorAll('.xi78nG8b ._BMsHw2S .ofo4bP_8')[1])?.innerHTML
+                like = (document.querySelectorAll('.xi78nG8b ._BMsHw2S .ofo4bP_8')[0])?.innerHTML
+                fans = (document.querySelector('.KtZzcbT8 .JWilT3lH'))?.innerHTML
+            }
+
+            return ({ content, username, total: String(Number(total) || 0), like: Number(like) ? like : undefined, fans })
+        })
+
+        result = { ...info, url: url.href, prefix: getPrefix(info.content), platform: '抖音' }
+    } catch (e) { result = { url, prefix: '. 【】' } }
+
+    douyinResolve[url](result)
+    DouYinHandle(true)
 }
