@@ -50,10 +50,14 @@ route.post('/tag/del', async (req, res) => {
 })
 
 route.post('/keyword/add', async (req, res) => {
-    const { content } = req.body
-    const data = await model.keyword.addKeyword(content, 2)
+    const { content, type } = req.body
 
-    res.send({ id: data[0] })
+    if (type !== undefined) {
+        const data = await model.keyword.addKeyword(content, type)
+
+        res.send({ id: data[0] })
+    } else res.send({ id: -1 })
+
     res.end()
 })
 
