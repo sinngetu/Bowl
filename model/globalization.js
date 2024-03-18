@@ -80,23 +80,22 @@ async function XiaoHongShu(url) {
     try {
         const res = await fetch(url.href, {
             headers: {
-                accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-                'accept-language': 'zh-CN,zh;q=0.9',
-                'cache-control': 'max-age=0',
-                'sec-ch-ua': '"Google Chrome";v="119", "Chromium";v="119", "Not?A_Brand";v="24"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'same-origin',
-                'sec-fetch-user': '?1',
-                'upgrade-insecure-requests': '1'
-            },
-            referrerPolicy: 'strict-origin-when-cross-origin',
-            body: null,
-            method: 'GET',
-            mode: 'cors',
-            credentials: 'include'
+                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+                'cache-control': "max-age=0",
+                'sec-ch-ua': "\"Chromium\";v=\"122\", \"Not(A:Brand\";v=\"24\", \"Google Chrome\";v=\"122\"",
+                'sec-ch-ua-mobile': "?0",
+                'sec-ch-ua-platform': "\"Windows\"",
+                'sec-fetch-dest': "document",
+                'sec-fetch-mode': "navigate",
+                'sec-fetch-site': "same-origin",
+                'sec-fetch-user': "?1",
+                'upgrade-insecure-requests': "1",
+                cookie: "xsecappid=xhs-pc-web; gid.sign=tW2tm2DSUThgQ5o8gVF6BdUkbCI=; cache_feeds=[]; abRequestId=636dbeee410e790df3c1cde2875c307f; cacheId=c383c55b-8258-4deb-945e-a01ebd08a5a2; unread={%22ub%22:%22659f44de000000001000f882%22%2C%22ue%22:%2265a20127000000001101c177%22%2C%22uc%22:28}; acw_tc=008647037bf759653850bb9b70b117e3c4d92696f91c7d87a48f2c2facbe1f5e; webBuild=4.6.0; a1=18e50292191d8t9y9hl9jgfs3kvy3cx09g9vmf66650000194159; webId=0a8730db3eb800b3e3b8539ac7f0998a; gid=yYd28JjJ24jfyYd28JjJykiKjyfY9jvjx1jVjKKkiMqThh28vqSC86888yj4y2j8JDj04i8J; web_session=030037a2c48e616a30bd5a9c8f224a7f98178a; websectiga=cf46039d1971c7b9a650d87269f31ac8fe3bf71d61ebf9d9a0a87efb414b816c; sec_poison_id=ef663115-e952-45cd-940d-525edde48c4e"
+              },
+              referrerPolicy: 'strict-origin-when-cross-origin',
+              body: null,
+              method: 'GET'
         })
 
         const id = url.pathname.split('/').pop()
