@@ -78,42 +78,63 @@ function sort(data) {
 
 async function XiaoHongShu(url) {
     try {
-        const res = await fetch(url.href, {
-            headers: {
-                accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
-                'cache-control': "max-age=0",
-                'sec-ch-ua': "\"Chromium\";v=\"122\", \"Not(A:Brand\";v=\"24\", \"Google Chrome\";v=\"122\"",
-                'sec-ch-ua-mobile': "?0",
-                'sec-ch-ua-platform': "\"Windows\"",
-                'sec-fetch-dest': "document",
-                'sec-fetch-mode': "navigate",
-                'sec-fetch-site': "same-origin",
-                'sec-fetch-user': "?1",
-                'upgrade-insecure-requests': "1",
-                cookie: "xsecappid=xhs-pc-web; gid.sign=tW2tm2DSUThgQ5o8gVF6BdUkbCI=; cache_feeds=[]; abRequestId=636dbeee410e790df3c1cde2875c307f; cacheId=c383c55b-8258-4deb-945e-a01ebd08a5a2; unread={%22ub%22:%22659f44de000000001000f882%22%2C%22ue%22:%2265a20127000000001101c177%22%2C%22uc%22:28}; acw_tc=008647037bf759653850bb9b70b117e3c4d92696f91c7d87a48f2c2facbe1f5e; webBuild=4.6.0; a1=18e50292191d8t9y9hl9jgfs3kvy3cx09g9vmf66650000194159; webId=0a8730db3eb800b3e3b8539ac7f0998a; gid=yYd28JjJ24jfyYd28JjJykiKjyfY9jvjx1jVjKKkiMqThh28vqSC86888yj4y2j8JDj04i8J; web_session=030037a2c48e616a30bd5a9c8f224a7f98178a; websectiga=cf46039d1971c7b9a650d87269f31ac8fe3bf71d61ebf9d9a0a87efb414b816c; sec_poison_id=ef663115-e952-45cd-940d-525edde48c4e"
-              },
-              referrerPolicy: 'strict-origin-when-cross-origin',
-              body: null,
-              method: 'GET'
+        const page = await browser.newPage()
+        await page.goto(url, { timeout: 0 })
+
+        let info = await page.evaluate(() => {
+            let content, username, total, like
+
+            content = ((document.getElementById('detail-title'))?.innerHTML || '') + ' ' + (document.getElementById('detail-desc'))?.innerText
+            username = (document.querySelector('span.username'))?.innerText
+            total = (document.querySelectorAll('.engage-bar span.count')[2])?.innerHTML
+            like = (document.querySelectorAll('.engage-bar span.count')[0])?.innerHTML
+
+            return ({ content, username, total: String(Number(total) || 0), like: Number(like) ? like : undefined })
         })
 
-        const id = url.pathname.split('/').pop()
-        const text = await res.text()
-        const raw = text.split('window.__INITIAL_STATE__=')[1].split('</script>')[0]
+        result = { ...info, url: url.href, prefix: getPrefix(info.content), platform: '小红书' }
+    } catch (e) { result = { url, prefix: '. 【】' } }
 
-        let info
-        eval('info = ' + raw)
-        const note = info.note.noteDetailMap[id].note
+    return result
 
-        const platform = '小红书'
-        const content = `${note.title} ${note.desc.replaceAll('\n', ' ')}`
-        const username = note.user.nickname
-        const total = note.interactInfo.commentCount
-        const prefix = getPrefix(content)
+    // try {
+    //     const res = await fetch(url.href, {
+    //         headers: {
+    //             accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    //             'accept-language': "zh-CN,zh;q=0.9,en;q=0.8",
+    //             'cache-control': "max-age=0",
+    //             'sec-ch-ua': "\"Chromium\";v=\"122\", \"Not(A:Brand\";v=\"24\", \"Google Chrome\";v=\"122\"",
+    //             'sec-ch-ua-mobile': "?0",
+    //             'sec-ch-ua-platform': "\"Windows\"",
+    //             'sec-fetch-dest': "document",
+    //             'sec-fetch-mode': "navigate",
+    //             'sec-fetch-site': "same-origin",
+    //             'sec-fetch-user': "?1",
+    //             'upgrade-insecure-requests': "1",
+    //             cookie: "abRequestId=0b41e10d-2509-526f-bef9-32e6856202f0; a1=18c75d820f0xgn82m9kz4r59bxdvt5iozdtm2kxxn50000642182; webId=547e5018b5360a4ffbf58d10d4f77998; web_session=030037a24d38e7028cb8df2a06224a80a7c518; gid=yYSW2fYJ4qudyYSW2fYJ8fTCi8CkIYJ6jTu49CIF2jDCf628h923lJ888K4JyYJ8dfKqJKjS; xsecappid=xhs-pc-web; cache_feeds=[]; unread={%22ub%22:%2265ebdcaf0000000001028f77%22%2C%22ue%22:%2265e41d11000000000102ac13%22%2C%22uc%22:30}; webBuild=4.8.0; websectiga=6169c1e84f393779a5f7de7303038f3b47a78e47be716e7bec57ccce17d45f99; sec_poison_id=bccf813a-7fe0-4ed4-b3d8-dcb94b10c9ec"
+    //           },
+    //           referrerPolicy: 'strict-origin-when-cross-origin',
+    //           body: null,
+    //           method: 'GET'
+    //     })
 
-        return { platform, url: url.href, content, username, total, prefix }
-    } catch (e) { return { url, prefix: '. 【】' } }
+    //     const id = url.pathname.split('/').pop()
+    //     const text = await res.text()
+
+    //     const raw = text.split('window.__INITIAL_STATE__=')[1].split('</script>')[0]
+
+    //     let info
+    //     eval('info = ' + raw)
+    //     const note = info.note.noteDetailMap[id].note
+
+    //     const platform = '小红书'
+    //     const content = `${note.title} ${note.desc.replaceAll('\n', ' ')}`
+    //     const username = note.user.nickname
+    //     const total = note.interactInfo.commentCount
+    //     const prefix = getPrefix(content)
+
+    //     return { platform, url: url.href, content, username, total, prefix }
+    // } catch (e) { return { url, prefix: '. 【】' } }
 }
 
 async function WeiBo(url) {
@@ -122,16 +143,20 @@ async function WeiBo(url) {
         const res = await fetch(`https://weibo.com/ajax/statuses/show?id=${id}&locale=zh-CN`, {
             headers: {
                 accept: "application/json, text/plain, */*",
-                "accept-language": "zh-CN,zh;q=0.9",
-                "client-version": "v2.44.23",
-                "sec-ch-ua": "\"Google Chrome\";v=\"119\", \"Chromium\";v=\"119\", \"Not?A_Brand\";v=\"24\"",
+                "accept-language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7",
+                "client-version": "v2.45.17",
+                "priority": "u=1, i",
+                "sec-ch-ua": "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"",
                 "sec-ch-ua-mobile": "?0",
                 "sec-ch-ua-platform": "\"Windows\"",
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
                 "sec-fetch-site": "same-origin",
-                "server-version": "v2023.11.14.2",
-                "x-requested-with": "XMLHttpRequest"
+                "server-version": "v2024.05.11.3",
+                "x-requested-with": "XMLHttpRequest",
+
+                "x-xsrf-token": "hFTQsCJsQYWGrTUgu1l2u9qs",
+                "cookie": "SUB=_2AkMSIvmtf8NxqwFRmfoWzmLqbIl_zA_EieKkfgh2JRMxHRl-yT9vqhQ9tRB6OaLXQg03isO03u1JbN1DXAZpGyAdlO4K; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WWklbWhS1a1k2yLzSVC0vcw; SINAGLOBAL=3770158050955.421.1702786717229; UOR=,,tophub.today; ULV=1714978233581:9:2:2:4938983557273.718.1714978233418:1714978034240; XSRF-TOKEN=hFTQsCJsQYWGrTUgu1l2u9qs; WBPSESS=V0zdZ7jH8_6F0CA8c_ussdAiOmKM8lvnqKqJpD8AmmKY3c5vhNjRcFdliIXMx06DzAV5hTIPHBOSiKZ-WplY3yVCWEGAC2o5SI28C4JOUZpOCBxX1MppMm-Y79s0Eycd0S5nDa6NKf-R2R-8P4LjTIx7T1H2VNtHd6OSrN6Er4M=",
             },
             referrer: url,
             referrerPolicy: "strict-origin-when-cross-origin",
