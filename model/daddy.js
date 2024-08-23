@@ -1,7 +1,7 @@
 const dayjs = require('dayjs')
 const db = require('./db')
 
-const table = () => db('work_daddy')
+const table = () => db('work_boss')
 
 exports.saveInfo = async (data) => data.length ? await table().insert(data) : []
 exports.getInfo = {
