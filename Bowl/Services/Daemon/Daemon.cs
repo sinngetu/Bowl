@@ -2,20 +2,21 @@
 
 namespace Bowl.Services.Daemon
 {
-
     public class Daemon
     {
-        static private List<Thread> pools = [];
-        static private readonly List<Action> tasks = [];
+        static List<Thread> pools = [];
+        static readonly List<Action> tasks = [
+            LocalSocket.Service.Start,
+        ];
 
-        static private Thread ThreadStart(Action action)
+        static Thread ThreadStart(Action action)
         {
             Thread thread = new Thread(new ThreadStart(action));
             thread.Start();
             return thread;
         }
 
-        static private void Threads()
+        static void Threads()
         {
             // Startup
             foreach(var task in tasks)

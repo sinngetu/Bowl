@@ -24,6 +24,7 @@
 
         public static readonly Dictionary<ErrorType, Errors> Dict = new Dictionary<ErrorType, Errors>
         {
+            { ErrorType.NoError, new Errors { Code = (int)ErrorType.NoError, Message = "No error" } },
             { ErrorType.InvalidArgument, new Errors { Code = (int)ErrorType.InvalidArgument, Message = "Invalid argument." } },
             { ErrorType.RecordDuplication, new Errors { Code = (int)ErrorType.RecordDuplication, Message = "Record duplication." } },
             { ErrorType.NotExist, new Errors { Code = (int)ErrorType.NotExist, Message = "Record does not exist." } },
