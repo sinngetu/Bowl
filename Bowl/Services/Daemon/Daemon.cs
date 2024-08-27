@@ -2,7 +2,7 @@
 
 namespace Bowl.Services.Daemon
 {
-    public class Daemon
+    public static class Daemon
     {
         static List<Thread> pools = [];
         static readonly List<Action> tasks = [
@@ -50,7 +50,7 @@ namespace Bowl.Services.Daemon
             }
         }
 
-        static public Thread Start()
+        public static Thread Start()
         {
             return new Thread(new ThreadStart(Threads));
         }

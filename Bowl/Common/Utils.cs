@@ -4,9 +4,11 @@ namespace Bowl.Common
 {
     public delegate void LogMethod(string? message, params object?[] args);
 
-    public class Utils
+    public static class Utils
     {
-        static public IConfiguration config { get; private set; }
+        public static IConfiguration config { get; private set; }
+        public static IServiceProvider serviceProvider { get; private set; }
+        public static ILogger logger { get; private set; }
 
         static Utils()
         {
@@ -19,7 +21,13 @@ namespace Bowl.Common
             config = builder.Build();
         }
 
-        static public void Log(LogMethod log, params object?[] args)
+        public static void Initialize(IServiceProvider provider, ILogger log)
+        {
+            serviceProvider = provider;
+            logger = log;
+        }
+
+        public static void Log(LogMethod log, params object?[] args)
         {
             var methodBase = new StackTrace()?.GetFrame(1)?.GetMethod();
             var _class = methodBase?.DeclaringType;
@@ -28,7 +36,7 @@ namespace Bowl.Common
             log($"{_class} => {_method}", args);
         }
 
-        static public Errors ErrorHandle(ErrorType type, object? data)
+        public static Errors ErrorHandle(ErrorType type, object? data)
         {
             var isSuccessAndHasData = (type == ErrorType.NoError) && (data != null);
 

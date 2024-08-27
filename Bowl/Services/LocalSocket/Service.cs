@@ -2,32 +2,14 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Bowl.Common;
+using Bowl.Models.LocalSocket;
 using Serilog;
 
 namespace Bowl.Services.LocalSocket
 {
     public class Service
     {
-        class Information
-        {
-            [JsonPropertyName("action")]
-            public string Action { get; set; }
-
-            [JsonPropertyName("data")]
-            public object? Data { get; set; }
-        }
-
-        static Errors Distribute(Information info)
-        {
-            switch(info.Action)
-            {
-                case "":
-                default: return Errors.Dict[ErrorType.NoError];
-            }
-        }
-
         static void Handle(object obj)
         {
             Socket client = (Socket)obj;
@@ -39,7 +21,7 @@ namespace Bowl.Services.LocalSocket
             Information info = JsonSerializer.Deserialize<Information>(raw);
 
             // Handle
-            var data = Distribute(info);
+            var data = Distributer.Distribute(info);
 
             // Send data
             var message = JsonSerializer.Serialize(data);

@@ -2,7 +2,7 @@
 
 namespace Bowl.Services
 {
-    public class ServicesInitializer
+    public static class ServicesInitializer
     {
         public static void Initialize(WebApplicationBuilder builder)
         {

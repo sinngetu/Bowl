@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Bowl.Data;
 using Bowl.Services;
+using Bowl.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,10 +39,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+Utils.Initialize(app.Services, app.Logger);
+
 // app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
