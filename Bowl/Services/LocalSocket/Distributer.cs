@@ -2,6 +2,7 @@
 using Bowl.Models.Entities;
 using Bowl.Models.LocalSocket;
 using Bowl.Services.Business;
+using System.Text.Json;
 
 namespace Bowl.Services.LocalSocket
 {
@@ -19,6 +20,7 @@ namespace Bowl.Services.LocalSocket
             {
                 case Information.ActionType.SetWeiboHotlist: return SetWeiboHotlist(info.Data);
                 case Information.ActionType.AddBossNews: return AddBossNews(info.Data);
+                case Information.ActionType.BigNews: return BigNews(info.Data);
                 default: return (ErrorType.NoError, null);
             }
         }
@@ -46,7 +48,7 @@ namespace Bowl.Services.LocalSocket
             catch (Exception ex)
             {
                 Utils.Log(Utils.logger.LogError, ex);
-                return (ErrorType.Unknow, false);
+                return (ErrorType.UnknowError, false);
             }
         }
 
@@ -72,7 +74,50 @@ namespace Bowl.Services.LocalSocket
             catch (Exception ex)
             {
                 Utils.Log(Utils.logger.LogError, ex);
-                return (ErrorType.Unknow, false);
+                return (ErrorType.UnknowError, false);
+            }
+        }
+
+        static (ErrorType, bool) BigNews(object data)
+        {
+            try
+            {
+                var news = (List<News>)data;
+                var service = Utils.serviceProvider.GetRequiredService<NotificationService>();
+                var msg = JsonSerializer.Serialize(news);
+
+                // TODO: port needs to be configured
+                return service.Notify(9999, msg);
+            }
+            catch (InvalidCastException ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.InvalidArgument, false);
+            }
+            catch (InvalidOperationException ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.ServiceError, false);
+            }
+            catch (ArgumentNullException ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.InvalidArgument, false);
+            }
+            catch (JsonException ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.InvalidArgument, false);
+            }
+            catch (NotSupportedException ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.InvalidArgument, false);
+            }
+            catch (Exception ex)
+            {
+                Utils.Log(Utils.logger.LogError, ex);
+                return (ErrorType.UnknowError, false);
             }
         }
     }

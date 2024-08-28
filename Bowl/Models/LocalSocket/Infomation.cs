@@ -10,11 +10,11 @@ namespace Bowl.Models.LocalSocket
         [JsonPropertyName("data")]
         public object? Data { get; set; }
 
-
         public static class ActionType
         {
             public const string SetWeiboHotlist = "set_weibo";
             public const string AddBossNews = "add_boss_news";
+            public const string BigNews = "big_news";
         }
     }
 }
