@@ -92,30 +92,33 @@ namespace Bowl.Services.Business
             }
         }
 
-        private bool NewsFilter(News news, GetNewsParameters parameters)
-        {
-            var tags = (news.Tags ?? "")
-                .Split(",")
-                .Where(r => r != "")
-                .Select(r => int.Parse(r))
-                .ToArray();
-
-            var isInMedium = parameters.Medium.Length != 0 ? parameters.Medium.Contains(news.Medium) : true;
-            var containsTitle = news.Title.Contains(parameters.Title);
-            var isStatus = news.Status == parameters.Status;
-            var isInTags = parameters.Tags.Length != 0 ? parameters.Tags.Aggregate(false, (result, tag) => result || tags.Contains(tag)) : true;
-            var isInDateRange = parameters.Start > news.Date && parameters.End < news.Date;
-
-            return isInMedium && containsTitle && isStatus && isInTags && isInDateRange;
-        }
-
         public (ErrorType, List<News>) GetNews(GetNewsParameters parameters)
         {
             try
             {
-                var data = _context.News
-                    .Where(r => NewsFilter(r, parameters))
-                    .ToList();
+                var query = _context.News.AsQueryable()
+                    .Where(n => n.Date > parameters.Start && n.Date < parameters.End)
+                    .Where(n => n.Status == parameters.Status);
+
+                if (parameters.Medium.Length != 0)
+                    query = query.Where(n => parameters.Medium.Contains(n.Medium));
+                if (!string.IsNullOrEmpty(parameters.Title))
+                    query = query.Where(n => n.Title.Contains(parameters.Title));
+
+                var data = query.ToList();
+
+                if (parameters.Tags.Length != 0)
+                {
+                    var tags = data
+                        .SelectMany(n => (n.Tags ?? "")
+                        .Split(",")
+                        .Where(r => !string.IsNullOrEmpty(r))
+                        .Select(r => int.Parse(r)))
+                        .Distinct()
+                        .ToList();
+
+                    data = data.Where(n => parameters.Tags.Any(tag => tags.Contains(tag))).ToList();
+                }
 
                 return (ErrorType.NoError, data);
             }
