@@ -47,7 +47,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, news, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{news}", news);
                 return (ErrorType.DatabaseError, false);
             }
         }
@@ -69,7 +69,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, hash, news, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{hash}, {news}", hash, news);
                 return (ErrorType.DatabaseError, false);
             }
         }
@@ -87,7 +87,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, hash, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{hash}", hash);
                 return (ErrorType.DatabaseError, null);
             }
         }
@@ -121,7 +121,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, parameters, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{parameters}", parameters);
                 return (ErrorType.DatabaseError, new List<News>());
             }
         }
@@ -146,7 +146,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, news, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{news}", news);
                 return (ErrorType.DatabaseError, false);
             }
         }
@@ -163,7 +163,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, hashes, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{hashes}", hashes);
                 return (ErrorType.DatabaseError, new List<Boss>());
             }
         }
@@ -180,7 +180,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, content, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{content}", content);
                 return (ErrorType.DatabaseError, new List<Boss>());
             }
         }
@@ -197,7 +197,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, start, end, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{start}, {end}", start, end);
                 return (ErrorType.DatabaseError, new List<Boss>());
             }
         }

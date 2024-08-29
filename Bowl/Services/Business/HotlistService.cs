@@ -36,7 +36,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, hash, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{hash}", hash);
                 return (ErrorType.DatabaseError, null);
             }
         }
@@ -53,7 +53,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, content, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{content}", content);
                 return (ErrorType.DatabaseError, new List<Hotlist>());
             }
         }
@@ -74,7 +74,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, start, end, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{start}, {end}", start, end);
                 return (ErrorType.DatabaseError, new List<Hotlist>());
             }
         }
@@ -91,7 +91,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, platform, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{platform}", platform);
                 return (ErrorType.DatabaseError, new List<Hotlist>());
             }
         }
@@ -114,7 +114,7 @@ namespace Bowl.Services.Business
                 .ToList();
 
             if (list.Contains(_default))
-                Utils.Log(_logger.LogWarning, hashes);
+                _logger.LogWarning(Utils.GetClassNameAndMethodName() + "{hashes}", hashes);
 
             weiboList = list;
         }

@@ -31,7 +31,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.DatabaseError, new List<Keyword>());
             }
         }
@@ -47,7 +47,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, keyword, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{keyword}", keyword);
 
                 return (ErrorType.DatabaseError, false);
             }
@@ -68,7 +68,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, id, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{id}", id);
 
                 return (ErrorType.DatabaseError, false);
             }
@@ -92,7 +92,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, id, keyword, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{id}, {keyword}", id, keyword);
 
                 return (ErrorType.DatabaseError, false);
             }

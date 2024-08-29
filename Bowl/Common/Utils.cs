@@ -27,13 +27,13 @@ namespace Bowl.Common
             logger = log;
         }
 
-        public static void Log(LogMethod log, params object?[] args)
+        public static string GetClassNameAndMethodName()
         {
             var methodBase = new StackTrace()?.GetFrame(1)?.GetMethod();
             var _class = methodBase?.DeclaringType;
             var _method = methodBase?.Name;
 
-            log($"{_class} => {_method}", args);
+            return $"[{_class} => {_method}] ";
         }
 
         public static Errors ErrorHandle(ErrorType type, object? data)

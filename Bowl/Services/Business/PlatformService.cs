@@ -28,7 +28,7 @@ namespace Bowl.Services.Business
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName());
 
                 return (ErrorType.DatabaseError, new List<Platform>());
             }

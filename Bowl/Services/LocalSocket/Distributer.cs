@@ -37,17 +37,17 @@ namespace Bowl.Services.LocalSocket
             }
             catch (InvalidCastException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (InvalidOperationException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.ServiceError, false);
             }
             catch (Exception ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.UnknowError, false);
             }
         }
@@ -63,17 +63,17 @@ namespace Bowl.Services.LocalSocket
             }
             catch (InvalidCastException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (InvalidOperationException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.ServiceError, false);
             }
             catch (Exception ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.UnknowError, false);
             }
         }
@@ -91,32 +91,32 @@ namespace Bowl.Services.LocalSocket
             }
             catch (InvalidCastException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (InvalidOperationException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.ServiceError, false);
             }
             catch (ArgumentNullException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (JsonException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (NotSupportedException ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
             }
             catch (Exception ex)
             {
-                Utils.Log(Utils.logger.LogError, ex);
+                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.UnknowError, false);
             }
         }

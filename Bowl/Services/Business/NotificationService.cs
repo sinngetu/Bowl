@@ -40,22 +40,22 @@ namespace Bowl.Services.Business
             }
             catch (SocketException ex)
             {
-                Utils.Log(_logger.LogError, port, data, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{port}, {data}", port, data);
                 return (ErrorType.NetError, false);
             }
             catch (ArgumentNullException ex)
             {
-                Utils.Log(_logger.LogError, port, data, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{port}, {data}", port, data);
                 return (ErrorType.InvalidArgument, false);
             }
             catch (ObjectDisposedException ex)
             {
-                Utils.Log(_logger.LogError, port, data, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{port}, {data}", port, data);
                 return (ErrorType.SocketError, false);
             }
             catch (Exception ex)
             {
-                Utils.Log(_logger.LogError, port, data, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{port}, {data}", port, data);
                 return (ErrorType.UnknowError, false);
             }
         }

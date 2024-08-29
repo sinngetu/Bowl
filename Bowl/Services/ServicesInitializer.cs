@@ -11,6 +11,7 @@ namespace Bowl.Services
             builder.Services.AddScoped<IPlatformService, PlatformService>();
             builder.Services.AddScoped<IHotlistService, HotlistService>();
             builder.Services.AddScoped<INewsService, NewsService>();
+            builder.Services.AddTransient<INotificationService, NotificationService>();
         }
     }
 }

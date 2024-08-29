@@ -8,7 +8,7 @@ using Bowl.Services.Business;
 namespace Bowl.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("news")]
     public class NewsController : ControllerBase
     {
         private readonly ILogger<NewsController> _logger;
@@ -35,7 +35,7 @@ namespace Bowl.Controllers
             [FromQuery] int? status
         )
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var parameters = new GetNewsParameters
             {
@@ -54,7 +54,7 @@ namespace Bowl.Controllers
         [HttpPut("tag/attach")]
         public IActionResult AttachTagToNews([FromBody] AttachTagToNewsRequestBody body)
         {
-            Utils.Log( _logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var tags = string.Join(string.Empty, body.Tags);
             var (err, data) = _newsService.UpdateNews(body.Hash, new News { Tags = tags });
@@ -65,7 +65,7 @@ namespace Bowl.Controllers
         [HttpPost("tag")]
         public IActionResult AddTag([FromBody] AddTagRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             try
             {
@@ -84,7 +84,7 @@ namespace Bowl.Controllers
             }
             catch (Exception ex) {
                 // JSON parse error
-                Utils.Log(_logger.LogError, body, ex);
+                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{body}", body);
                 return Ok(Errors.Dict[ErrorType.InvalidArgument]);
             }
         }
@@ -92,7 +92,7 @@ namespace Bowl.Controllers
         [HttpDelete("tag")]
         public IActionResult RemoveTag([FromBody] RemoveTagRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
 
@@ -102,7 +102,7 @@ namespace Bowl.Controllers
         [HttpPost("keyword")]
         public IActionResult AddKeyword([FromBody] AddKeywordRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Content, Type = body.Type };
             var (err, isSuccess) = _keywordService.AddKeyword(keyword);
@@ -113,7 +113,7 @@ namespace Bowl.Controllers
         [HttpDelete("keyword")]
         public IActionResult RemoveKeyword([FromBody] RemoveKeywordRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
 
@@ -123,7 +123,7 @@ namespace Bowl.Controllers
         [HttpPost("search")]
         public IActionResult AddSearch([FromBody] AddSearchRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Word, Type = (int)KeywordType.Search, Extend = body.Url };
             var (err, isSuccess) = _keywordService.AddKeyword(keyword);
@@ -134,7 +134,7 @@ namespace Bowl.Controllers
         [HttpPut("search")]
         public IActionResult UpdateSearch([FromBody] UpdateSearchRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Word, Extend = body.Url };
             var (err, isSuccess) = _keywordService.UpdateKeyword(body.Id, keyword);
@@ -145,7 +145,7 @@ namespace Bowl.Controllers
         [HttpDelete("search")]
         public IActionResult RemoveSearch([FromBody] RemoveSearchRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
             
             var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
 
@@ -155,7 +155,7 @@ namespace Bowl.Controllers
         [HttpGet("boss")]
         public IActionResult GetBossNews([FromQuery] DateTime start, [FromQuery] DateTime end)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, data) = _newsService.GetBossNewsByDate(start, end);
 

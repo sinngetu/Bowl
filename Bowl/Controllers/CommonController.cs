@@ -5,7 +5,7 @@ using Bowl.Services.Business;
 namespace Bowl.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("common")]
     public class CommonController : ControllerBase
     {
         private readonly ILogger<CommonController> _logger;
@@ -29,7 +29,7 @@ namespace Bowl.Controllers
         [HttpGet("media")]
         public IActionResult GetMedia()
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, data) = _mediaService.GetAllMedia();
             return Ok(Utils.ErrorHandle(err, data));
@@ -38,7 +38,7 @@ namespace Bowl.Controllers
         [HttpGet("platform")]
         public IActionResult GetPlatform()
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, data) = _platformService.GetAllPlatform();
             var result = Utils.ErrorHandle(err, data);
@@ -49,7 +49,7 @@ namespace Bowl.Controllers
         [HttpGet("keyword")]
         public IActionResult GetKeyword()
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, data) = _keywordService.GetAllKeyword();
             return Ok(Utils.ErrorHandle(err, data));

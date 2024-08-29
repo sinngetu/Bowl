@@ -26,18 +26,21 @@ namespace Bowl.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetHotlist([FromQuery] DateTime start, [FromQuery] DateTime end)
+        public IActionResult GetHotlist([FromQuery] DateTime? start, [FromQuery] DateTime? end)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            var (err, data) = _hotlistService.GetHotlistByDate(start, end);
+            DateTime _start = start ?? DateTime.Now.AddMinutes(-30);
+            DateTime _end = end ?? DateTime.Now;
+
+            var (err, data) = _hotlistService.GetHotlistByDate(_start, _end);
             return Ok(Utils.ErrorHandle(err, data));
         }
 
         [HttpPost("keyword")]
         public IActionResult AddKeyword([FromBody] AddKeywordRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Content, Type = (int)KeywordType.Hotlist };
             var (err, isSuccess) = _keywordService.AddKeyword(keyword);
@@ -48,7 +51,7 @@ namespace Bowl.Controllers
         [HttpDelete("keyword")]
         public IActionResult RemoveKeyword([FromBody] RemoveKeywordRequestBody body)
         {
-            Utils.Log(_logger.LogTrace);
+            _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
 
