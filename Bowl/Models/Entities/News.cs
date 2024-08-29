@@ -12,6 +12,7 @@ namespace Bowl.Models.Entities
         public int Status { get; }
         public string? Tags { get; set; }
         public string Keyword { get; }
+
         static private string TableName = "work_news";
         static public void onCreating(ModelBuilder modelBuilder)
         {

@@ -18,6 +18,7 @@ namespace Bowl.Models.Entities
         public string Word { get; set; }
         public int Type { get; set; }
         public string? Extend { get; set; }
+
         static private string TableName = "work_keyword";
         static public void onCreating(ModelBuilder modelBuilder)
         {

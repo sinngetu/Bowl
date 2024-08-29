@@ -6,6 +6,7 @@ namespace Bowl.Models.Entities
     {
         public int Id { get; }
         public string Name { get; set; }
+
         static private string TableName = "work_platform";
         static public void onCreating(ModelBuilder modelBuilder)
         {
