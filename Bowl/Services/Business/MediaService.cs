@@ -14,7 +14,7 @@ namespace Bowl.Services.Business
         private readonly ApplicationDbContext _context;
         private readonly ILogger<MediaService> _logger;
 
-        MediaService(ApplicationDbContext context, ILogger<MediaService> logger)
+        public MediaService(ApplicationDbContext context, ILogger<MediaService> logger)
         {
             _context = context;
             _logger = logger;

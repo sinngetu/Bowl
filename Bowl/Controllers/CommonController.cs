@@ -9,15 +9,15 @@ namespace Bowl.Controllers
     public class CommonController : ControllerBase
     {
         private readonly ILogger<CommonController> _logger;
-        private readonly MediaService _mediaService;
-        private readonly PlatformService _platformService;
-        private readonly KeywordService _keywordService;
+        private readonly IMediaService _mediaService;
+        private readonly IPlatformService _platformService;
+        private readonly IKeywordService _keywordService;
 
         public CommonController(
             ILogger<CommonController> logger,
-            MediaService mediaService,
-            PlatformService platformService,
-            KeywordService keywordService
+            IMediaService mediaService,
+            IPlatformService platformService,
+            IKeywordService keywordService
         )
         {
             _logger = logger;

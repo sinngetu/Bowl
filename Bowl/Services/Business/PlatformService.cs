@@ -14,7 +14,7 @@ namespace Bowl.Services.Business
         private readonly ApplicationDbContext _context;
         private readonly ILogger<PlatformService> _logger;
 
-        PlatformService(ApplicationDbContext context, ILogger<PlatformService> logger)
+        public PlatformService(ApplicationDbContext context, ILogger<PlatformService> logger)
         {
             _context = context;
             _logger = logger;

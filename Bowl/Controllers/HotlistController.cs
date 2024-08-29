@@ -11,10 +11,14 @@ namespace Bowl.Controllers
     public class HotlistController : ControllerBase
     {
         private readonly ILogger<HotlistController> _logger;
-        private readonly HotlistService _hotlistService;
-        private readonly KeywordService _keywordService;
+        private readonly IHotlistService _hotlistService;
+        private readonly IKeywordService _keywordService;
 
-        public HotlistController(ILogger<HotlistController> logger, HotlistService hotlistService, KeywordService keywordService)
+        public HotlistController(
+            ILogger<HotlistController> logger,
+            IHotlistService hotlistService,
+            IKeywordService keywordService
+        )
         {
             _logger = logger;
             _hotlistService = hotlistService;

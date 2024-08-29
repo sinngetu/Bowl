@@ -12,13 +12,13 @@ namespace Bowl.Controllers
     public class NewsController : ControllerBase
     {
         private readonly ILogger<NewsController> _logger;
-        private readonly NewsService _newsService;
-        private readonly KeywordService _keywordService;
+        private readonly INewsService _newsService;
+        private readonly IKeywordService _keywordService;
 
         public NewsController(
             ILogger<NewsController> logger,
-            NewsService newsService,
-            KeywordService keywordService
+            INewsService newsService,
+            IKeywordService keywordService
         )
         {
             _logger = logger;
