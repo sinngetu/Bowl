@@ -26,7 +26,7 @@ namespace Bowl.Common
     {
         public required int Code { get; set; }
         public required string Message { get; set; }  // Send to client
-        public object? Content { get; set; }
+        public object? Data { get; set; }
 
         public static readonly Dictionary<ErrorType, Errors> Dict = new Dictionary<ErrorType, Errors>
         {
@@ -43,6 +43,6 @@ namespace Bowl.Common
             { ErrorType.SocketError, new Errors { Code = (int)ErrorType.SocketError, Message = "Service exception." } },
         };
 
-        public static Errors NoError<T>(T content) { return new Errors { Code = (int)ErrorType.NoError, Message = "", Content = content }; }
+        public static Errors NoError<T>(T data) { return new Errors { Code = (int)ErrorType.NoError, Message = "", Data = data }; }
     }
 }

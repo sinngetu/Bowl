@@ -90,11 +90,11 @@ namespace Bowl.Controllers
         }
 
         [HttpDelete("tag")]
-        public IActionResult RemoveTag([FromBody] RemoveTagRequestBody body)
+        public IActionResult RemoveTag([FromQuery] int id)
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
+            var (err, isSuccess) = _keywordService.RemoveKeyword(id);
 
             return Ok(Utils.ErrorHandle(err, isSuccess));
         }
@@ -111,11 +111,11 @@ namespace Bowl.Controllers
         }
 
         [HttpDelete("keyword")]
-        public IActionResult RemoveKeyword([FromBody] RemoveKeywordRequestBody body)
+        public IActionResult RemoveKeyword([FromQuery] int id)
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
+            var (err, isSuccess) = _keywordService.RemoveKeyword(id);
 
             return Ok(Utils.ErrorHandle(err, isSuccess));
         }
@@ -143,11 +143,11 @@ namespace Bowl.Controllers
         }
 
         [HttpDelete("search")]
-        public IActionResult RemoveSearch([FromBody] RemoveSearchRequestBody body)
+        public IActionResult RemoveSearch([FromQuery] int id)
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
             
-            var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
+            var (err, isSuccess) = _keywordService.RemoveKeyword(id);
 
             return Ok(Utils.ErrorHandle(err, isSuccess));
         }

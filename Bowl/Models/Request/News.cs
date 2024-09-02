@@ -28,20 +28,10 @@
         }
     }
 
-    public class RemoveTagRequestBody
-    {
-        public int Id { get; set; }
-    }
-
     public class AddKeywordRequestBody
     {
         public string Content;
         public int Type;
-    }
-
-    public class RemoveKeywordRequestBody
-    {
-        public int Id { get; set; }
     }
 
     public class AddSearchRequestBody

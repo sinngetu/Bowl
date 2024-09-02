@@ -49,11 +49,11 @@ namespace Bowl.Controllers
         }
 
         [HttpDelete("keyword")]
-        public IActionResult RemoveKeyword([FromBody] RemoveKeywordRequestBody body)
+        public IActionResult RemoveKeyword([FromQuery] int id)
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            var (err, isSuccess) = _keywordService.RemoveKeyword(body.Id);
+            var (err, isSuccess) = _keywordService.RemoveKeyword(id);
 
             return Ok(Utils.ErrorHandle(err, isSuccess));
         }
