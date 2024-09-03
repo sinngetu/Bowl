@@ -47,8 +47,15 @@
         public string Url;
     }
 
-    public class RemoveSearchRequestBody
+    public class ResponseNews
     {
-        public int Id;
+        public string Hash { get; set; }
+        public string Link { get; set; }
+        public int Medium { get; set; }
+        public string Title { get; set; }
+        public string Date { get; set; }
+        public int Status { get; set; }
+        public int[] Tags { get; set; }
+        public string Keyword { get; set; }
     }
 }

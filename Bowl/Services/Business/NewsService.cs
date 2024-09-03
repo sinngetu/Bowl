@@ -9,8 +9,8 @@ namespace Bowl.Services.Business
     {
         (ErrorType, bool) AddNews(List<News> news);
         (ErrorType, bool) UpdateNews(string hash, News news);
-        (ErrorType, News) GetNewsByHash(string hash);
-        (ErrorType, List<News>) GetNews(GetNewsParameters parameters);
+        (ErrorType, ResponseNews) GetNewsByHash(string hash);
+        (ErrorType, List<ResponseNews>) GetNews(GetNewsParameters parameters);
         (ErrorType, bool) AddBossNews(List<Boss> news);
         (ErrorType, List<Boss>) GetBossNewsByHashes(List<string> hashes);
         (ErrorType, List<Boss>) GetBossNewsByContent(string content);
@@ -26,6 +26,26 @@ namespace Bowl.Services.Business
         {
             _logger = logger;
             _context = context;
+        }
+
+        private ResponseNews NewsToResponseNews(News news)
+        {
+            return new ResponseNews
+            {
+                Hash = news.Hash,
+                Link = news.Link,
+                Medium = news.Medium,
+                Title = news.Title,
+                Date = news.Date.ToString("yyyy-MM-dd HH:mm:ss"),
+                Status = news.Status,
+                Keyword = news.Keyword,
+                Tags = string.IsNullOrEmpty(news.Tags)
+                    ? []
+                    : news.Tags
+                        .Split(",")
+                        .Select(str => int.Parse(str))
+                        .ToArray()
+            };
         }
 
         public (ErrorType, bool) AddNews(List<News> news)
@@ -74,7 +94,7 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, News) GetNewsByHash(string hash)
+        public (ErrorType, ResponseNews) GetNewsByHash(string hash)
         {
             try
             {
@@ -83,7 +103,7 @@ namespace Bowl.Services.Business
                 if (record == null)
                     return (ErrorType.NotExist, null);
 
-                return (ErrorType.NoError, record);
+                return (ErrorType.NoError, NewsToResponseNews(record));
             }
             catch (Exception ex)
             {
@@ -92,40 +112,48 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, List<News>) GetNews(GetNewsParameters parameters)
+        public (ErrorType, List<ResponseNews>) GetNews(GetNewsParameters parameters)
         {
             try
             {
                 var query = _context.News.AsQueryable()
-                    .Where(n => n.Date > parameters.Start && n.Date < parameters.End)
-                    .Where(n => n.Status == parameters.Status);
+                    .Where(r => r.Date > parameters.Start && r.Date < parameters.End)
+                    .Where(r => r.Status == parameters.Status);
 
                 if (parameters.Medium.Length != 0)
-                    query = query.Where(n => parameters.Medium.Contains(n.Medium));
+                    query = query.Where(r => parameters.Medium.Contains(r.Medium));
                 if (!string.IsNullOrEmpty(parameters.Title))
-                    query = query.Where(n => n.Title.Contains(parameters.Title));
+                    query = query.Where(r => r.Title.Contains(parameters.Title));
 
                 var data = query.ToList();
 
                 if (parameters.Tags.Length != 0)
                 {
                     var tags = data
-                        .SelectMany(n => (n.Tags ?? "")
-                        .Split(",")
-                        .Where(r => !string.IsNullOrEmpty(r))
-                        .Select(r => int.Parse(r)))
+                        .SelectMany(r => (r.Tags ?? "")
+                            .Split(",")
+                            .Where(r => !string.IsNullOrEmpty(r))
+                            .Select(r => int.Parse(r))
+                        )
                         .Distinct()
                         .ToList();
 
-                    data = data.Where(n => parameters.Tags.Any(tag => tags.Contains(tag))).ToList();
+                    data = data
+                        .Where(r => parameters.Tags.Any(tag => tags.Contains(tag)))
+                        .ToList();
                 }
 
-                return (ErrorType.NoError, data);
+                var result = data
+                    .OrderByDescending(r => r.Date)
+                    .Select(NewsToResponseNews)
+                    .ToList();
+
+                return (ErrorType.NoError, result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{parameters}", parameters);
-                return (ErrorType.DatabaseError, new List<News>());
+                return (ErrorType.DatabaseError, new List<ResponseNews>());
             }
         }
 
@@ -190,6 +218,9 @@ namespace Bowl.Services.Business
 
         public (ErrorType, List<Boss>) GetBossNewsByDate(DateTime start, DateTime end)
         {
+            start = start.ToLocalTime();
+            end = end.ToLocalTime();
+
             try
             {
                 var data = _context.Boss
