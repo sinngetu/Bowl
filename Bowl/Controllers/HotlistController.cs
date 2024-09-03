@@ -30,8 +30,8 @@ namespace Bowl.Controllers
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            DateTime _start = start ?? DateTime.Now.AddMinutes(-30);
-            DateTime _end = end ?? DateTime.Now;
+            DateTime _start = (start ?? DateTime.Now.AddMinutes(-30)).ToLocalTime();
+            DateTime _end = (end ?? DateTime.Now).ToLocalTime();
 
             var (err, data) = _hotlistService.GetHotlistByDate(_start, _end);
             return Ok(Utils.ErrorHandle(err, data));

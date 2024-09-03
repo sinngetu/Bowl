@@ -41,8 +41,8 @@ namespace Bowl.Controllers
             {
                 Title = title ?? string.Empty,
                 Tags = tags ?? Array.Empty<int>(),
-                Start = start ?? DateTime.Now.AddMinutes(-30),
-                End = end ?? DateTime.Now,
+                Start = (start ?? DateTime.Now.AddMinutes(-30)).ToLocalTime(),
+                End = (end ?? DateTime.Now).ToLocalTime(),
                 Status = status ?? 0
             };
 
@@ -157,7 +157,7 @@ namespace Bowl.Controllers
         {
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
-            var (err, data) = _newsService.GetBossNewsByDate(start, end);
+            var (err, data) = _newsService.GetBossNewsByDate(start.ToLocalTime(), end.ToLocalTime());
 
             return Ok(Utils.ErrorHandle(err, data));
         }
