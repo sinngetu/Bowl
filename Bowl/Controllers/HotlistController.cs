@@ -57,5 +57,13 @@ namespace Bowl.Controllers
 
             return Ok(Utils.ErrorHandle(err, isSuccess));
         }
+
+        [HttpGet("weibo")]
+        public IActionResult GetWeibo()
+        {
+            var data = _hotlistService.GetWeiboList();
+
+            return Ok(Utils.ErrorHandle(ErrorType.NoError, data));
+        }
     }
 }
