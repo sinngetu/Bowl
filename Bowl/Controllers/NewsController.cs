@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Bowl.Models.Entities;
-using Bowl.Models.Request.News;
+using Bowl.Models.Request;
 using Bowl.Common;
 using Bowl.Services.Business;
 

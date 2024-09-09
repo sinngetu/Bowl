@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Bowl.Common;
 using Bowl.Models.Entities;
-using Bowl.Models.Request.News;
+using Bowl.Models.Request;
 using Bowl.Services.Business;
 
 namespace Bowl.Controllers

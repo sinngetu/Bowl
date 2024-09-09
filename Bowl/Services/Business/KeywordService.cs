@@ -57,7 +57,7 @@ namespace Bowl.Services.Business
         {
             try
             {
-                var record = _context.Keyword.SingleOrDefault(r => r.Id == id);
+                var record = _context.Keyword.Single(r => r.Id == id);
                 if (record != null)
                 {
                     _context.Keyword.Remove(record);
@@ -78,7 +78,7 @@ namespace Bowl.Services.Business
         {
             try
             {
-                var record = _context.Keyword.SingleOrDefault(r => r.Id == id);
+                var record = _context.Keyword.Single(r => r.Id == id);
 
                 if (record == null)
                     return (ErrorType.NotExist, false);

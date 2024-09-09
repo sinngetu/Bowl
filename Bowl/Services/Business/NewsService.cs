@@ -1,7 +1,8 @@
 ﻿using Bowl.Common;
 using Bowl.Data;
 using Bowl.Models.Entities;
-using Bowl.Models.Request.News;
+using Bowl.Models.Request;
+using Bowl.Models.Response;
 
 namespace Bowl.Services.Business
 {
@@ -9,10 +10,10 @@ namespace Bowl.Services.Business
     {
         (ErrorType, bool) AddNews(List<News> news);
         (ErrorType, bool) UpdateNews(string hash, News news);
-        (ErrorType, ResponseNews) GetNewsByHash(string hash);
-        (ErrorType, List<ResponseNews>) GetNews(GetNewsParameters parameters);
+        (ErrorType, NewsResponse) GetNewsByHash(string hash);
+        (ErrorType, List<NewsResponse>) GetNews(GetNewsParameters parameters);
         (ErrorType, bool) AddBossNews(List<Boss> news);
-        (ErrorType, List<ResponseBossNews>) GetBossNewsByDate(DateTime start, DateTime end);
+        (ErrorType, List<BossNewsResponse>) GetBossNewsByDate(DateTime start, DateTime end);
     }
 
     public class NewsService : INewsService
@@ -26,9 +27,9 @@ namespace Bowl.Services.Business
             _context = context;
         }
 
-        private ResponseNews NewsToResponseNews(News news)
+        private NewsResponse NewsToResponse(News news)
         {
-            return new ResponseNews
+            return new NewsResponse
             {
                 Hash = news.Hash,
                 Link = news.Link,
@@ -46,9 +47,9 @@ namespace Bowl.Services.Business
             };
         }
 
-        private ResponseBossNews BossNewsToResponseBossNews(Boss news)
+        private BossNewsResponse BossNewsToResponse(Boss news)
         {
-            return new ResponseBossNews
+            return new BossNewsResponse
             {
                 Hash = news.Hash,
                 Link = news.Link,
@@ -86,7 +87,7 @@ namespace Bowl.Services.Business
         {
             try
             {
-                var record = _context.News.SingleOrDefault(r => r.Hash == hash);
+                var record = _context.News.Single(r => r.Hash == hash);
 
                 if (record == null)
                     return (ErrorType.NotExist, false);
@@ -104,16 +105,16 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, ResponseNews) GetNewsByHash(string hash)
+        public (ErrorType, NewsResponse) GetNewsByHash(string hash)
         {
             try
             {
-                var record = _context.News.SingleOrDefault(r => r.Hash == hash);
+                var record = _context.News.Single(r => r.Hash == hash);
 
                 if (record == null)
                     return (ErrorType.NotExist, null);
 
-                return (ErrorType.NoError, NewsToResponseNews(record));
+                return (ErrorType.NoError, NewsToResponse(record));
             }
             catch (Exception ex)
             {
@@ -122,7 +123,7 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, List<ResponseNews>) GetNews(GetNewsParameters parameters)
+        public (ErrorType, List<NewsResponse>) GetNews(GetNewsParameters parameters)
         {
             try
             {
@@ -155,7 +156,7 @@ namespace Bowl.Services.Business
 
                 var result = data
                     .OrderByDescending(r => r.Date)
-                    .Select(NewsToResponseNews)
+                    .Select(NewsToResponse)
                     .ToList();
 
                 return (ErrorType.NoError, result);
@@ -163,7 +164,7 @@ namespace Bowl.Services.Business
             catch (Exception ex)
             {
                 _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{parameters}", parameters);
-                return (ErrorType.DatabaseError, new List<ResponseNews>());
+                return (ErrorType.DatabaseError, new List<NewsResponse>());
             }
         }
 
@@ -192,7 +193,7 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, List<ResponseBossNews>) GetBossNewsByDate(DateTime start, DateTime end)
+        public (ErrorType, List<BossNewsResponse>) GetBossNewsByDate(DateTime start, DateTime end)
         {
             start = start.ToLocalTime();
             end = end.ToLocalTime();
@@ -201,18 +202,15 @@ namespace Bowl.Services.Business
             {
                 var data = _context.Boss
                     .Where(r => r.Date >= start && r.Date <= end)
+                    .Select(BossNewsToResponse)
                     .ToList();
 
-                var result = data
-                    .Select(BossNewsToResponseBossNews)
-                    .ToList();
-
-                return (ErrorType.NoError, result);
+                return (ErrorType.NoError, data);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{start}, {end}", start, end);
-                return (ErrorType.DatabaseError, new List<ResponseBossNews>());
+                return (ErrorType.DatabaseError, new List<BossNewsResponse>());
             }
         }
     }
