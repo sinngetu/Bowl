@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Bowl.Models.Entities;
 using Bowl.Models.Request.News;
@@ -69,7 +70,10 @@ namespace Bowl.Controllers
 
             try
             {
-                var extend = JsonSerializer.Serialize(body.Color);
+                var extend = JsonSerializer.Serialize(
+                    body.Color,
+                    new JsonSerializerOptions{ DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull }
+                );
 
                 var keyword = new Keyword
                 {
@@ -78,9 +82,9 @@ namespace Bowl.Controllers
                     Extend = extend,
                 };
 
-                var (err, data) = _keywordService.AddKeyword(keyword);
+                var (err, id) = _keywordService.AddKeyword(keyword);
 
-                return Ok(Utils.ErrorHandle(err, data));
+                return Ok(Utils.ErrorHandle(err, id));
             }
             catch (Exception ex) {
                 // JSON parse error
@@ -105,9 +109,9 @@ namespace Bowl.Controllers
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Content, Type = body.Type };
-            var (err, isSuccess) = _keywordService.AddKeyword(keyword);
+            var (err, id) = _keywordService.AddKeyword(keyword);
 
-            return Ok(Utils.ErrorHandle(err, isSuccess));
+            return Ok(Utils.ErrorHandle(err, id));
         }
 
         [HttpDelete("keyword")]
@@ -126,9 +130,9 @@ namespace Bowl.Controllers
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Word, Type = (int)KeywordType.Search, Extend = body.Url };
-            var (err, isSuccess) = _keywordService.AddKeyword(keyword);
+            var (err, id) = _keywordService.AddKeyword(keyword);
 
-            return Ok(Utils.ErrorHandle(err, isSuccess));
+            return Ok(Utils.ErrorHandle(err, id));
         }
 
         [HttpPut("search")]

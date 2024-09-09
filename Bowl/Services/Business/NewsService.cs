@@ -12,9 +12,7 @@ namespace Bowl.Services.Business
         (ErrorType, ResponseNews) GetNewsByHash(string hash);
         (ErrorType, List<ResponseNews>) GetNews(GetNewsParameters parameters);
         (ErrorType, bool) AddBossNews(List<Boss> news);
-        (ErrorType, List<Boss>) GetBossNewsByHashes(List<string> hashes);
-        (ErrorType, List<Boss>) GetBossNewsByContent(string content);
-        (ErrorType, List<Boss>) GetBossNewsByDate(DateTime start, DateTime end);
+        (ErrorType, List<ResponseBossNews>) GetBossNewsByDate(DateTime start, DateTime end);
     }
 
     public class NewsService : INewsService
@@ -45,6 +43,18 @@ namespace Bowl.Services.Business
                         .Split(",")
                         .Select(str => int.Parse(str))
                         .ToArray()
+            };
+        }
+
+        private ResponseBossNews BossNewsToResponseBossNews(Boss news)
+        {
+            return new ResponseBossNews
+            {
+                Hash = news.Hash,
+                Link = news.Link,
+                Content = news.Content,
+                Date = news.Date.ToString("yyyy-MM-dd HH:mm:ss"),
+                Type = news.Type,
             };
         }
 
@@ -182,41 +192,7 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, List<Boss>) GetBossNewsByHashes(List<string> hashes)
-        {
-            try
-            {
-                var data = _context.Boss
-                    .Where(r => hashes.Contains(r.Hash))
-                    .ToList();
-
-                return (ErrorType.NoError, data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{hashes}", hashes);
-                return (ErrorType.DatabaseError, new List<Boss>());
-            }
-        }
-
-        public (ErrorType, List<Boss>) GetBossNewsByContent(string content)
-        {
-            try
-            {
-                var data = _context.Boss
-                    .Where(r => r.Content.Contains(content))
-                    .ToList();
-
-                return (ErrorType.NoError, data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{content}", content);
-                return (ErrorType.DatabaseError, new List<Boss>());
-            }
-        }
-
-        public (ErrorType, List<Boss>) GetBossNewsByDate(DateTime start, DateTime end)
+        public (ErrorType, List<ResponseBossNews>) GetBossNewsByDate(DateTime start, DateTime end)
         {
             start = start.ToLocalTime();
             end = end.ToLocalTime();
@@ -227,15 +203,17 @@ namespace Bowl.Services.Business
                     .Where(r => r.Date >= start && r.Date <= end)
                     .ToList();
 
-                return (ErrorType.NoError, data);
+                var result = data
+                    .Select(BossNewsToResponseBossNews)
+                    .ToList();
+
+                return (ErrorType.NoError, result);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{start}, {end}", start, end);
-                return (ErrorType.DatabaseError, new List<Boss>());
+                return (ErrorType.DatabaseError, new List<ResponseBossNews>());
             }
         }
-
-
     }
 }

@@ -43,9 +43,9 @@ namespace Bowl.Controllers
             _logger.LogTrace(Utils.GetClassNameAndMethodName());
 
             var keyword = new Keyword { Word = body.Content, Type = (int)KeywordType.Hotlist };
-            var (err, isSuccess) = _keywordService.AddKeyword(keyword);
+            var (err, id) = _keywordService.AddKeyword(keyword);
 
-            return Ok(Utils.ErrorHandle(err, isSuccess));
+            return Ok(Utils.ErrorHandle(err, id));
         }
 
         [HttpDelete("keyword")]

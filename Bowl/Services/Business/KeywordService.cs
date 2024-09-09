@@ -7,7 +7,7 @@ namespace Bowl.Services.Business
     public interface IKeywordService
     {
         (ErrorType, List<Keyword>) GetAllKeyword();
-        (ErrorType, bool) AddKeyword(Keyword keyword);
+        (ErrorType, int) AddKeyword(Keyword keyword);
         (ErrorType, bool) RemoveKeyword(int id);
         (ErrorType, bool) UpdateKeyword(int id, Keyword keyword);
     }
@@ -36,20 +36,20 @@ namespace Bowl.Services.Business
             }
         }
 
-        public (ErrorType, bool) AddKeyword(Keyword keyword)
+        public (ErrorType, int) AddKeyword(Keyword keyword)
         {
             try
             {
                 _context.Keyword.Add(keyword);
                 _context.SaveChanges();
 
-                return (ErrorType.NoError, true);
+                return (ErrorType.NoError, keyword.Id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, Utils.GetClassNameAndMethodName() + "{keyword}", keyword);
 
-                return (ErrorType.DatabaseError, false);
+                return (ErrorType.DatabaseError, 0);
             }
         }
 
