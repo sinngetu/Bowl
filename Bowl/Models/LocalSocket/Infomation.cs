@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Bowl.Models.LocalSocket
 {
@@ -8,7 +9,7 @@ namespace Bowl.Models.LocalSocket
         public string Action { get; set; }
 
         [JsonPropertyName("data")]
-        public object? Data { get; set; }
+        public JsonElement? Data { get; set; }
 
         public static class ActionType
         {

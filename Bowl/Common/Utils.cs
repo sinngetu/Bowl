@@ -7,7 +7,7 @@ namespace Bowl.Common
     public static class Utils
     {
         public static IConfiguration config { get; private set; }
-        public static IServiceProvider serviceProvider { get; private set; }
+        public static IServiceScopeFactory serviceFactory { get; private set; }
         public static ILogger logger { get; private set; }
 
         static Utils()
@@ -23,7 +23,7 @@ namespace Bowl.Common
 
         public static void Initialize(IServiceProvider provider, ILogger log)
         {
-            serviceProvider = provider;
+            serviceFactory = provider.GetRequiredService<IServiceScopeFactory>();
             logger = log;
         }
 

@@ -25,17 +25,23 @@ namespace Bowl.Services.LocalSocket
             }
         }
 
-        static (ErrorType, bool) SetWeiboHotlist(object data)
+        static (ErrorType, bool) SetWeiboHotlist(JsonElement? data)
         {
+            if (!data.HasValue)
+                return (ErrorType.InvalidArgument, false);
+
             try
             {
-                var hashes = (List<string>)data;
-                var service = Utils.serviceProvider.GetRequiredService<HotlistService>();
+                using (var scope = Utils.serviceFactory.CreateScope())
+                {
+                    var hashes = data.Value.Deserialize<List<string>>();
+                    var service = scope.ServiceProvider.GetRequiredService<HotlistService>();
 
-                service.SetWeiboList(hashes);
-                return (ErrorType.NoError, true);
+                    service.SetWeiboList(hashes);
+                    return (ErrorType.NoError, true);
+                }
             }
-            catch (InvalidCastException ex)
+            catch (JsonException ex)
             {
                 Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
@@ -52,16 +58,22 @@ namespace Bowl.Services.LocalSocket
             }
         }
 
-        static (ErrorType, bool) AddBossNews(object data)
+        static (ErrorType, bool) AddBossNews(JsonElement? data)
         {
+            if (!data.HasValue)
+                return (ErrorType.InvalidArgument, false);
+
             try
             {
-                var hashes = (List<Boss>)data;
-                var service = Utils.serviceProvider.GetRequiredService<NewsService>();
+                using (var scope = Utils.serviceFactory.CreateScope())
+                {
+                    var bossNews = data.Value.Deserialize<List<Boss>>();
+                    var service = scope.ServiceProvider.GetRequiredService<NewsService>();
 
-                return service.AddBossNews(hashes);
+                    return service.AddBossNews(bossNews);
+                }
             }
-            catch (InvalidCastException ex)
+            catch (JsonException ex)
             {
                 Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);
@@ -78,21 +90,21 @@ namespace Bowl.Services.LocalSocket
             }
         }
 
-        static (ErrorType, bool) BigNews(object data)
+        static (ErrorType, bool) BigNews(JsonElement? data)
         {
+            if (!data.HasValue)
+                return (ErrorType.InvalidArgument, false);
+
             try
             {
-                var news = (List<News>)data;
-                var service = Utils.serviceProvider.GetRequiredService<NotificationService>();
-                var msg = JsonSerializer.Serialize(news);
+                using (var scope = Utils.serviceFactory.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                    var msg = data.Value.GetRawText();
 
-                // TODO: port needs to be configured
-                return service.Notify(9999, msg);
-            }
-            catch (InvalidCastException ex)
-            {
-                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
-                return (ErrorType.InvalidArgument, false);
+                    // TODO: port needs to be configured
+                    return service.Notify(9999, msg);
+                }
             }
             catch (InvalidOperationException ex)
             {
@@ -100,11 +112,6 @@ namespace Bowl.Services.LocalSocket
                 return (ErrorType.ServiceError, false);
             }
             catch (ArgumentNullException ex)
-            {
-                Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
-                return (ErrorType.InvalidArgument, false);
-            }
-            catch (JsonException ex)
             {
                 Utils.logger.LogError(ex, Utils.GetClassNameAndMethodName());
                 return (ErrorType.InvalidArgument, false);

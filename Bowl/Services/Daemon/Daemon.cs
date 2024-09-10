@@ -19,7 +19,7 @@ namespace Bowl.Services.Daemon
         static void Threads()
         {
             // Startup
-            foreach(var task in tasks)
+            foreach (var task in tasks)
                 pools.Add(ThreadStart(task));
 
             while (true)
@@ -52,7 +52,10 @@ namespace Bowl.Services.Daemon
 
         public static Thread Start()
         {
-            return new Thread(new ThreadStart(Threads));
+            var thread = new Thread(new ThreadStart(Threads));
+
+            thread.Start();
+            return thread;
         }
     }
 }

@@ -3,6 +3,7 @@ using Serilog;
 using Bowl.Data;
 using Bowl.Services;
 using Bowl.Common;
+using Bowl.Services.Daemon;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 
 Utils.Initialize(app.Services, app.Logger);
+Daemon.Start();
 
 // app.UseHttpsRedirection();
 app.UseAuthorization();
