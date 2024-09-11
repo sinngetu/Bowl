@@ -25,6 +25,8 @@ namespace Bowl.Services.LocalSocket
             }
         }
 
+        // TODO: If there are too many types of actions, handle functions need to be separated into other files
+
         static (ErrorType, bool) SetWeiboHotlist(JsonElement? data)
         {
             if (!data.HasValue)
@@ -35,7 +37,7 @@ namespace Bowl.Services.LocalSocket
                 using (var scope = Utils.serviceFactory.CreateScope())
                 {
                     var hashes = data.Value.Deserialize<List<string>>();
-                    var service = scope.ServiceProvider.GetRequiredService<HotlistService>();
+                    var service = scope.ServiceProvider.GetRequiredService<IHotlistService>();
 
                     service.SetWeiboList(hashes);
                     return (ErrorType.NoError, true);
@@ -68,7 +70,7 @@ namespace Bowl.Services.LocalSocket
                 using (var scope = Utils.serviceFactory.CreateScope())
                 {
                     var bossNews = data.Value.Deserialize<List<Boss>>();
-                    var service = scope.ServiceProvider.GetRequiredService<NewsService>();
+                    var service = scope.ServiceProvider.GetRequiredService<INewsService>();
 
                     return service.AddBossNews(bossNews);
                 }
@@ -103,7 +105,7 @@ namespace Bowl.Services.LocalSocket
                     var msg = data.Value.GetRawText();
 
                     // TODO: port needs to be configured
-                    return service.Notify(9999, msg);
+                    return service.Notify(8151, msg);
                 }
             }
             catch (InvalidOperationException ex)

@@ -1,5 +1,4 @@
 ﻿using Bowl.Common;
-using Bowl.Data;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -14,12 +13,10 @@ namespace Bowl.Services.Business
     public class NotificationService : INotificationService
     {
         private readonly ILogger<NotificationService> _logger;
-        private readonly ApplicationDbContext _context;
 
-        public NotificationService(ILogger<NotificationService> logger, ApplicationDbContext context)
+        public NotificationService(ILogger<NotificationService> logger)
         {
             _logger = logger;
-            _context = context;
         }
 
         public (ErrorType, bool) Notify(int port, string data)
