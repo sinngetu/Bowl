@@ -15,6 +15,20 @@ var password = dbSettings["password"];
 var database = dbSettings["database"];
 var connectionString = $"server={host};port=3306;database={database};user={user};password={password};";
 
+// Handle front-end CORS
+var frontHost = builder.Configuration.GetValue<string>("FrontHost");
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEndCorsPolicy", policy =>
+    {
+        policy.WithOrigins(frontHost)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, new MySqlServerVersion(new Version(5, 6, 51))));
 ServicesInitializer.Initialize(builder);
@@ -43,6 +57,7 @@ if (app.Environment.IsDevelopment())
 Utils.Initialize(app.Services, app.Logger);
 Daemon.Start();
 
+app.UseCors("FrontEndCorsPolicy");
 // app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
