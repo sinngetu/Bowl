@@ -1,0 +1,6 @@
+@Bowl_HostAddress = http://localhost:5090
+
+GET {{Bowl_HostAddress}}/news/
+Accept: application/json
+
+###

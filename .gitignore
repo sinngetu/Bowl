@@ -1,1 +1,12 @@
-node_modules
+# Ignore build and publish directories
+bin/
+obj/
+
+# Ignore log files
+logs/
+
+# Ignore user-specific files
+*.user
+
+# Ignore Visual Studio settings file
+.vs/
