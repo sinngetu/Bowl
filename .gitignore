@@ -10,6 +10,3 @@ logs/
 
 # Ignore Visual Studio settings file
 .vs/
-
-# Ignore sensitive configuration files
-appsettings.Development.json
