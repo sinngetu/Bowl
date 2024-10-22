@@ -17,7 +17,7 @@ namespace Bowl.Services.LocalSocket
                 Socket client = (Socket)obj;
 
                 // Parse the received data
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[1024 * 32];
                 int length = client.Receive(buffer);
                 string raw = Encoding.UTF8.GetString(buffer, 0, length);
                 Information info = JsonSerializer.Deserialize<Information>(raw);

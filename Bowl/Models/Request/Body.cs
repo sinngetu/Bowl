@@ -1,4 +1,6 @@
-﻿namespace Bowl.Models.Request
+﻿using System.Text.Json.Serialization;
+
+namespace Bowl.Models.Request
 {
     public class GetNewsParameters
     {
@@ -45,5 +47,20 @@
         public int Id { get; set; }
         public string Word { get; set; }
         public string Url { get; set; }
+    }
+
+    public class RawWeiboHotlist
+    {
+        [JsonPropertyName("rank")]
+        public int Rank { get; set; }
+
+        [JsonPropertyName("num")]
+        public int Num { get; set; }
+
+        [JsonPropertyName("word")]
+        public string Word { get; set; }
+
+        [JsonPropertyName("icon_desc")]
+        public string Icon { get; set; }
     }
 }
