@@ -1,6 +1,7 @@
 ﻿using Bowl.Common;
 using Bowl.Models.Entities;
 using Bowl.Models.LocalSocket;
+using Bowl.Models.Request;
 using Bowl.Services.Business;
 using System.Text.Json;
 
@@ -36,10 +37,11 @@ namespace Bowl.Services.LocalSocket
             {
                 using (var scope = Utils.serviceFactory.CreateScope())
                 {
-                    var hashes = data.Value.Deserialize<List<string>>();
+                    var raw = data.Value.GetProperty("raw").Deserialize<List<RawWeiboHotlist>>();
+                    var hashes = data.Value.GetProperty("hashes").Deserialize<List<string>>();
                     var service = scope.ServiceProvider.GetRequiredService<IHotlistService>();
 
-                    service.SetWeiboList(hashes);
+                    service.SetWeiboList(raw, hashes);
                     return (ErrorType.NoError, true);
                 }
             }

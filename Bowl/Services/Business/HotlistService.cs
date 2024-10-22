@@ -1,6 +1,7 @@
 ﻿using Bowl.Common;
 using Bowl.Data;
 using Bowl.Models.Entities;
+using Bowl.Models.Request;
 using Bowl.Models.Response;
 
 namespace Bowl.Services.Business
@@ -12,12 +13,14 @@ namespace Bowl.Services.Business
         (ErrorType, List<HotlistResponse>) GetHotlistByDate(DateTime start, DateTime end);
         (ErrorType, List<HotlistResponse>) GetHotlistByPlatform(int platform);
         List<HotlistResponse> GetWeiboList();
-        ErrorType SetWeiboList(List<string> hashes);
+        List<RawWeiboHotlist> GetWeiboRawList();
+        ErrorType SetWeiboList(List<RawWeiboHotlist> raw, List<string> hashes);
     }
 
     public class HotlistService : IHotlistService
     {
         private static List<HotlistResponse> weiboList = new List<HotlistResponse>();
+        private static List<RawWeiboHotlist> weiboRawList= new List<RawWeiboHotlist>();
 
         private readonly ILogger<HotlistService> _logger;
         private readonly ApplicationDbContext _context;
@@ -119,10 +122,17 @@ namespace Bowl.Services.Business
             return weiboList;
         }
 
-        public ErrorType SetWeiboList(List<string> hashes)
+        public List<RawWeiboHotlist> GetWeiboRawList()
+        {
+            return weiboRawList;
+        }
+
+        public ErrorType SetWeiboList(List<RawWeiboHotlist> raw, List<string> hashes)
         {
             try
             {
+                weiboRawList = raw;
+
                 var rawList = _context.Hotlist
                     .Where(r => hashes.Contains(r.Hash))
                     .ToList();
